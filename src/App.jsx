@@ -1,19 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import YouTube from "react-youtube";
 
-export default function App() {
+export default function BackgroundAudioSite() {
   const [youtubeTrack, setYoutubeTrack] = useState("");
   const [rainSource, setRainSource] = useState("");
   const [fireSource, setFireSource] = useState("");
   const [rainPlaying, setRainPlaying] = useState(false);
   const [firePlaying, setFirePlaying] = useState(false);
+  const [audioCtx, setAudioCtx] = useState(null);
+  const [gainNode, setGainNode] = useState(null);
+  const [lowPassFilter, setLowPassFilter] = useState(null);
+  const youtubePlayerRef = useRef(null);
+
+  useEffect(() => {
+    if (!audioCtx) {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(300, ctx.currentTime);
+      filter.Q.setValueAtTime(1.8, ctx.currentTime);
+      gain.gain.setValueAtTime(0.5, ctx.currentTime);
+      setAudioCtx(ctx);
+      setGainNode(gain);
+      setLowPassFilter(filter);
+    }
+  }, []);
+
+  const onYouTubeReady = (event) => {
+    const youtubeAudio = event.target.getIframe();
+    if (audioCtx) {
+      const source = audioCtx.createMediaElementSource(youtubeAudio);
+      source.connect(lowPassFilter);
+      lowPassFilter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      youtubePlayerRef.current = event.target;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6 text-center">
       <h1 className="text-3xl font-bold mb-6">Relaxing Audio Player</h1>
       <div className="space-y-4">
         <input type="text" placeholder="YouTube link for main audio" onChange={(e) => setYoutubeTrack(e.target.value)} className="p-2 bg-gray-800" />
-        {youtubeTrack && <YouTube videoId={youtubeTrack.split("v=")[1]} />} 
+        {youtubeTrack && (
+          <YouTube videoId={youtubeTrack.split("v=")[1]} opts={{ playerVars: { autoplay: 1 } }} onReady={onYouTubeReady} />
+        )}
       </div>
 
       <div className="mt-10">
