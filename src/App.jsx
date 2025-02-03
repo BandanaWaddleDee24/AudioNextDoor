@@ -47,7 +47,7 @@ export default function BackgroundAudioSite() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6 text-center">
-      <h1 className="text-3xl font-bold mb-6">Relaxing Audio Player</h1>
+      <h1 className="text-3xl font-bold mb-6">Relaxingd Audio Player</h1>
       <div className="space-y-4">
         <input type="text" placeholder="YouTube link for main audio" onChange={(e) => setYoutubeTrack(e.target.value)} className="p-2 bg-gray-800" />
         {youtubeTrack && (
