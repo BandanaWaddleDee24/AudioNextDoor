@@ -10,7 +10,7 @@ export default function BackgroundAudioSite() {
   const [audioCtx, setAudioCtx] = useState(null);
   const [gainNode, setGainNode] = useState(null);
   const [lowPassFilter, setLowPassFilter] = useState(null);
-  const youtubePlayerRef = useRef(null);
+  const youtubeAudioRef = useRef(null);
 
   useEffect(() => {
     if (!audioCtx) {
@@ -28,13 +28,20 @@ export default function BackgroundAudioSite() {
   }, []);
 
   const onYouTubeReady = (event) => {
-    const youtubeAudio = event.target.getIframe();
+    const iframe = event.target.getIframe();
+    if (!iframe) return;
+    
+    const videoAudio = new Audio();
+    videoAudio.src = iframe.src;
+    videoAudio.crossOrigin = "anonymous";
+    videoAudio.play();
+    
     if (audioCtx) {
-      const source = audioCtx.createMediaElementSource(youtubeAudio);
+      const source = audioCtx.createMediaElementSource(videoAudio);
       source.connect(lowPassFilter);
       lowPassFilter.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-      youtubePlayerRef.current = event.target;
+      youtubeAudioRef.current = videoAudio;
     }
   };
 
