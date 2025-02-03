@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/AudioNextDoor/static/js/main.3f1a0d3d.js",
+    "main.js": "/AudioNextDoor/static/js/main.ec8aa500.js",
     "index.html": "/AudioNextDoor/index.html",
-    "main.3f1a0d3d.js.map": "/AudioNextDoor/static/js/main.3f1a0d3d.js.map"
+    "main.ec8aa500.js.map": "/AudioNextDoor/static/js/main.ec8aa500.js.map"
   },
   "entrypoints": [
-    "static/js/main.3f1a0d3d.js"
+    "static/js/main.ec8aa500.js"
   ]
 }
